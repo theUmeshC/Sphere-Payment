@@ -137,7 +137,9 @@ export async function customerTos(id, isMock) {
   const mockStr = isMock;
   const url = `https://api.spherepay.co/v1/customer/${id}/tos?mock=${mockStr}`;
 
-  const response = await axios.post(url, {}, { headers });
+  const response = await axios.post(url, {}, { headers: {
+    Authorization: `Bearer ${process.env.REACT_APP_SPHERE_API_KEY}`,
+  }, });
   return response;
 }
 

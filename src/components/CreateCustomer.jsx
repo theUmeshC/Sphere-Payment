@@ -52,7 +52,7 @@ const handleGetCustomerTos = () => {
         complete KYC
     </button>
     <button onClick={handleGetCustomerTos}>
-        get Customer
+        get Customer/Tos
     </button>
   </div>;
 };
