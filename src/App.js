@@ -1,4 +1,5 @@
 import CreateCustomer from "./components/CreateCustomer";
+import FileUploadComponent from "./components/FileUpload";
 import WebhookHandler from "./components/Webhook";
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <div>
       <CreateCustomer />
       <WebhookHandler />
+      <FileUploadComponent />
     </div>
   );
 }

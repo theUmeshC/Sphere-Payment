@@ -137,9 +137,15 @@ export async function customerTos(id, isMock) {
   const mockStr = isMock;
   const url = `https://api.spherepay.co/v1/customer/${id}/tos?mock=${mockStr}`;
 
-  const response = await axios.post(url, {}, { headers: {
-    Authorization: `Bearer ${process.env.REACT_APP_SPHERE_API_KEY}`,
-  }, });
+  const response = await axios.post(
+    url,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_SPHERE_API_KEY}`,
+      },
+    }
+  );
   return response;
 }
 
@@ -155,43 +161,51 @@ class File {
 }
 
 export async function createFile(customerId, mock) {
-  const emptyBlob = new Blob([]);
-  const form = new FormData();
-  form.append("customer", customerId);
-  form.append("type", "customerIdentityDocument"); // or 'customerUboDocument', 'customerIncorporationDocument'
-  form.append("name", "My Customer's Passport");
-  form.append(
-    "description",
-    "A document showing the information of the customer"
-  );
-  form.append(
-    "links",
-    "https://images.wsj.net/im-889295?width=607&height=405,https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-  );
-  form.append("file", emptyBlob, "emptyBuffer");
+  // const form = new FormData();
+  // form.append('customer', customerId);
+  // form.append('type', 'customerIdentityDocument');
+  // form.append('name', 'My Customer\'s Passport');
+  // form.append('description', 'A document showing the information of the customer');
+  // form.append('links', 'https://images.wsj.net/im-889295?width=607&height=405,https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
+  // form.append('file', new Blob([]), 'emptyBuffer');
 
-  const mockStr = mock ? "true" : "false";
-  const url = `https://api.spherepay.co/v1/file?mock=${mockStr}`;
+  // const mockStr = mock ? "true" : "false";
+  // const url = `https://api.spherepay.co/v1/file?mock=${mockStr}`;
 
   try {
-    const response = await axios.post(url, form, {
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_SPHERE_API_KEY}`,
-      },
-    });
-    const responseData = response.data;
-    const files = responseData.data.files.map(
-      (file) =>
-        new File(
-          file.id,
-          file.type,
-          file.name,
-          file.description,
-          file.url,
-          file.mock
-        )
+    const formData = new FormData();
+    formData.append("customer", customerId);
+    formData.append("type", "customerIdentityDocument");
+    formData.append("name", "My Customer's Passport");
+    formData.append(
+      "description",
+      "A document showing the information of the customer"
     );
-    return files;
+    formData.append(
+      "links",
+      "https://images.wsj.net/im-889295?width=607&height=405,https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    );
+    formData.append("file", new Blob([]), "emptyBuffer");
+
+    const mockStr = mock ? "true" : "false";
+    const url = `https://api.spherepay.co/v1/file?mock=${mockStr}`;
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to create file: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const responseData = await response.json();
+    const filesResponse = responseData.data.files;
+    console.log(filesResponse);
+    // setFiles(filesResponse);
   } catch (error) {
     throw new Error(`Failed to create file: ${error.message}`);
   }
